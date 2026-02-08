@@ -1,8 +1,9 @@
 import { Request , Response} from "express" 
-import { User } from "../model/userModel"
+import { IUser, User } from "../model/userModel"
 import bcrypt from "bcryptjs"
-import { AsyncResource } from "node:async_hooks"
 import { signAccessToken } from "../util/token"
+import { AuthRequest } from "../middleware/auth"
+import jwt from "jsonwebtoken"
 
 
 export const registerUser =async (req:Request , res:Response)=>{
@@ -63,5 +64,28 @@ export const loginUser = async(req:Request , res:Response)=>{
             role : existingUser.role,
             accessToken
         }
+    })
+}
+
+
+export const getMyDetails = async(req:AuthRequest , res:Response)=>{
+    if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" })
+    }
+    const userId = req.user.sub
+    const user =
+        ((await User.findById(userId).select("-password")) as IUser) || null
+
+    if (!user) {
+        return res.status(404).json({
+        message: "User not found"
+        })
+    }
+
+    const { username, email, role} = user
+
+    res.status(200).json({
+        message: "Ok",
+        data: { username, email, role }
     })
 }

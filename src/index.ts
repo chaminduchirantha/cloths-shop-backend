@@ -4,15 +4,24 @@ import dotenv from "dotenv"
 import mongoose, { mongo } from "mongoose"
 import authRouter from "./router/auth.routes"
 import clothsRouter from "./router/cloths.routes"
+import cors from "cors"
 
 dotenv.config()
 
-const SERVER_PORT = process.env.SERVER_PORT
+const SERVER_PORT = Number(process.env.SERVER_PORT) || 5000
+
 const MONGO_URI = process.env.MONGO_URI as string 
 
 const app = express()
 
 app.use(express.json())
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  })
+)
 
 app.use("/api/v1/auth" , authRouter)
 app.use("/api/v1/cloths" , clothsRouter)
@@ -29,5 +38,5 @@ mongoose
 
 
 app.listen(SERVER_PORT,()=>{
-    console.log("Server is Running 5000")
+    console.log(`Server is running on port ${SERVER_PORT}`)
 })
