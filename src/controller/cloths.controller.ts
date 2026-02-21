@@ -116,3 +116,69 @@ export const updateCloths = async(req:Request, res:Response) =>{
     });
   }
 }
+
+
+export const deleteCloths = async(req:Request, res:Response) =>{
+    try {
+    const { id } = req.params;
+
+    const cloths = await Cloths.findById(id);
+    if (!cloths) {
+      return res.status(404).json({ message: "Cloths not found" });
+    }
+
+    await Cloths.findByIdAndDelete(id);
+
+    res.status(200).json({
+      message: "Cloths deleted successfully",
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Delete failed",
+      error: error.message,
+    });
+  }
+}
+
+
+export const searchCloths = async (req: Request, res: Response) => {
+  try {
+    const { query, category, page = "1", limit = "10" } = req.query;
+
+    const pageNumber = parseInt(page as string);
+    const limitNumber = parseInt(limit as string);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    // Build filter
+    const filter: any = {};
+
+    if (query) {
+      filter.itemName = { $regex: query, $options: "i" }; // case-insensitive search
+    }
+
+    if (category) {
+      filter.itemCategory = category;
+    }
+
+    const cloths = await Cloths.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNumber);
+
+    const total = await Cloths.countDocuments(filter);
+
+    return res.status(200).json({
+      message: "Search results",
+      data: cloths,
+      totalPages: Math.ceil(total / limitNumber),
+      totalCount: total,
+      page: pageNumber,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Search failed",
+      error: error.message,
+    });
+  }
+};
+
