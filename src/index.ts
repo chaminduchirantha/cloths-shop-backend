@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import mongoose, { mongo } from "mongoose"
 import authRouter from "./router/auth.routes"
 import clothsRouter from "./router/cloths.routes"
+import feedbackRouter from "./router/feedback.routes"
 import cors from "cors"
 
 dotenv.config()
@@ -25,6 +26,7 @@ app.use(
 
 app.use("/api/v1/auth" , authRouter)
 app.use("/api/v1/cloths" , clothsRouter)
+app.use("/api/v1/feedback" , feedbackRouter)
 
 mongoose
   .connect(MONGO_URI)
