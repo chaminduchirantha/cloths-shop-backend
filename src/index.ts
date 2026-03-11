@@ -19,12 +19,15 @@ const app = express()
 
 app.use(express.json())
 
-app.use(
-  cors({
-    origin: ["https://coths-shop-mcvkzjzxp-chaminduchiranthas-projects.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE"]
-  })
-)
+const corsOptions = {
+  origin: "https://fish-aquarium-iota.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  preflightContinue: false
+}
+
+app.use(cors(corsOptions))
 
 app.use("/api/v1/auth" , authRouter)
 app.use("/api/v1/cloths" , clothsRouter)
