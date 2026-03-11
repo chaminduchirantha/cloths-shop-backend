@@ -20,7 +20,7 @@ const app = express()
 app.use(express.json())
 
 const corsOptions = {
-  origin: "https://fish-aquarium-iota.vercel.app",
+  origin: "https://coths-shop-frontend.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
